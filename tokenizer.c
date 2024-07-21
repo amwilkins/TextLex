@@ -125,6 +125,11 @@ Token scanToken() {
 // interpret an array of characters
 static void interpret(const char *source) {
 
+  // destructively write an output file
+  FILE *out;
+  remove("output.txt");
+  out = fopen("output.txt", "a");
+
   initScanner(source);
   for (;;) {
     if (*scanner.current == '\0')
@@ -133,15 +138,18 @@ static void interpret(const char *source) {
     Token token = scanToken();
 
     printf("%.*s\n", token.length, token.start);
+
+    // append to output file
+    fprintf(out, "%.*s\n", token.length, token.start);
   }
 }
 
 // read execute print loop
 static void repl() {
-  // limited line size so we don't have to worry about memory
+  // limited line size
   char line[1024];
 
-  // for ever
+  // forever
   for (;;) {
     printf("> ");
 

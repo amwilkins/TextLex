@@ -1,3 +1,7 @@
+# Added
+*.txt
+tokenizer
+
 # Prerequisites
 *.d
 
