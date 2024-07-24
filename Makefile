@@ -1,7 +1,11 @@
-all: tokenizer
+CC ?= gcc
+BIN := tokenize
 
-make: tokenizer
-	gcc -o tokenizer tokenizer.c
+all:
+	$(CC) -o $(BIN) $(wildcard src/*.c)
+
+run: all
+	./$(BIN)
 
 clean:
-	rm tokenizer
+	rm $(BIN) | true

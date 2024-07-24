@@ -1,14 +1,5 @@
-/*
- * 2024-07-21
- * This is a basic tokenizer to play around with.
- * It takes either a text file or repl input
- * Returns newline separated tokens.
- */
-
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 // token struct
 typedef struct {
@@ -24,7 +15,7 @@ typedef struct {
 
 Scanner scanner;
 
-void initScanner(const char *source) {
+static void initScanner(const char *source) {
   scanner.start = source;
   scanner.current = source;
 }
@@ -123,7 +114,7 @@ Token scanToken() {
 }
 
 // interpret an array of characters
-static void interpret(const char *source) {
+void parseString(const char *source) {
 
   // destructively write an output file
   FILE *out;
@@ -142,65 +133,4 @@ static void interpret(const char *source) {
     // append to output file
     fprintf(out, "%.*s\n", token.length, token.start);
   }
-}
-
-// read execute print loop
-static void repl() {
-  // limited line size
-  char line[1024];
-
-  // forever
-  for (;;) {
-    printf("> ");
-
-    if (!fgets(line, sizeof(line), stdin)) {
-      printf("\n");
-      break;
-    }
-    interpret(line);
-  }
-}
-
-// read the file from a path
-static char *readFile(const char *path) {
-  FILE *file = fopen(path, "rb");
-
-  // if file is null, handle the error
-  if (file == NULL) {
-    fprintf(stderr, "Could not open file \"%s\".\n", path);
-    exit(74);
-  }
-
-  // get size of file
-  fseek(file, 0L, SEEK_END);
-  size_t fileSize = ftell(file);
-  rewind(file);
-
-  // allocate memory for the file
-  char *buffer = (char *)malloc(fileSize + 1);
-  size_t bytesRead = fread(buffer, sizeof(char), fileSize, file);
-  buffer[bytesRead] = '\0';
-
-  fclose(file);
-  return buffer;
-}
-
-// read file into memory and interpret
-static void runFile(const char *path) {
-  char *source = readFile(path);
-  interpret(source);
-  free(source);
-}
-
-int main(int argc, const char *argv[]) {
-  if (argc == 1) {
-    repl();
-  } else if (argc == 2) {
-    runFile(argv[1]);
-  } else {
-    printf("ERROR: Please supply 1 file\n");
-    exit(64);
-  }
-
-  return 0;
 }
