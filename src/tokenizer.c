@@ -1,13 +1,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-// token struct
-typedef struct {
-  const char *start;
-  int length;
-} Token;
+#include "dArray.h"
+#include "tokenizer.h"
 
-// create a scanner struct
 typedef struct {
   const char *start;
   const char *current;
@@ -15,7 +11,7 @@ typedef struct {
 
 Scanner scanner;
 
-static void initScanner(const char *source) {
+void initScanner(const char *source) {
   scanner.start = source;
   scanner.current = source;
 }
@@ -39,11 +35,22 @@ static char advance() {
   return scanner.current[-1];
 }
 
+// check if next character creates an expected token
+static bool match(char expected) {
+  if (isAtEnd())
+    return false;
+  if (*scanner.current != expected)
+    return false;
+  scanner.current++;
+  return true;
+}
+
 // make a token struct
-static Token makeToken() {
-  Token token;
+static rawToken makeToken() {
+  rawToken token;
   token.start = scanner.start;
   token.length = (int)(scanner.current - scanner.start);
+  token.isAtEnd = false;
   return token;
 }
 
@@ -52,17 +59,20 @@ bool isDigit(char c) { return c >= '0' && c <= '9'; }
 
 // is the scanner at a letter
 static bool isAlpha(char c) {
-  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' ||
+         c == '-';
 }
 
-// return a full word
-static Token word() {
-  while (isAlpha(peek()))
+// words can have numbers, as long as they start with a letter
+// Could make it so numbers could start as well, but for now it's fine
+static rawToken word() {
+  while (isAlpha(peek()) || isDigit(peek()))
     advance();
   return makeToken();
 }
 
-static Token number() {
+// return a full number
+static rawToken number() {
   while (isDigit(peek()))
     advance();
   // find decimal point
@@ -85,20 +95,63 @@ static void skipWhitespace() {
     case '\t':
       advance();
       break;
+    case '/':
+      if (peekNext() == '/') {
+        // A comment goes until the end of the line.
+        while (peek() != '\n' && !isAtEnd())
+          advance();
+      } else {
+        return;
+      }
+      break;
     default:
       return;
     }
   }
 }
 
+static rawToken end() {
+  rawToken token;
+  token.start = scanner.start;
+  token.length = (int)(scanner.current - scanner.start);
+  token.isAtEnd = true;
+  return token;
+}
+
+static rawToken newline() {
+  rawToken token;
+  token.start = scanner.start;
+  token.length = (int)(scanner.current - scanner.start);
+  token.isAtEnd = false;
+  return makeToken();
+}
+
+// scan for a string
+static rawToken string() {
+  while (peek() != '"' && !isAtEnd()) {
+    advance();
+  }
+
+  if (isAtEnd())
+    return end();
+
+  // The closing quote.
+  advance();
+  return makeToken();
+}
+
 // scan a token
-Token scanToken() {
+rawToken getToken() {
+  if (isAtEnd())
+    return end();
+
   skipWhitespace();
+
   scanner.start = scanner.current;
   char c = advance();
 
-  if (isAtEnd())
-    return makeToken();
+  if (c == '\n')
+    return newline();
 
   // return word
   if (isAlpha(c))
@@ -109,28 +162,5 @@ Token scanToken() {
     return number();
   }
 
-  // single non-alphanumeric character
   return makeToken();
-}
-
-// interpret an array of characters
-void parseString(const char *source) {
-
-  // destructively write an output file
-  FILE *out;
-  remove("output.txt");
-  out = fopen("output.txt", "a");
-
-  initScanner(source);
-  for (;;) {
-    if (*scanner.current == '\0')
-      break;
-
-    Token token = scanToken();
-
-    printf("%.*s\n", token.length, token.start);
-
-    // append to output file
-    fprintf(out, "%.*s\n", token.length, token.start);
-  }
 }

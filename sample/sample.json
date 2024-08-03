@@ -1,0 +1,20 @@
+// JSONISON language
+// var in = 1;
+// var out = in + 2;
+// print(out);
+
+{
+  "var":{
+    "in": 
+      {"int": "1"}
+  },
+  "var":{
+    "out": {
+      "+": [
+        {"int": "in"},
+        {"int": "2" }
+        ]
+      }
+  },
+  "print": "out"
+}

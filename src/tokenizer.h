@@ -4,13 +4,11 @@
 typedef struct {
   const char *start;
   int length;
-} Token;
+  bool isAtEnd;
+} rawToken;
 
-typedef struct {
-  const char *start;
-  const char *current;
-} Scanner;
-
-void parseString(const char *source);
+void parse(const char *source);
+void initScanner(const char *source);
+rawToken getToken();
 
 #endif

@@ -1,0 +1,11 @@
+# This is not a comment
+# Comments start with "//"
+// I'm too indecisive to choose a comment style so this also works
+(((s)))
+test_string = "Hello, Compiler!";
+
+var in = 1;
+
+var out = in + 1;
+
+print(out);
