@@ -4,6 +4,8 @@
 (((s)))
 test_string = "Hello, Compiler!";
 
+1 <= 2;
+
 var in = 1;
 
 var out = in + 1;

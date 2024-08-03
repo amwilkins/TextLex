@@ -149,6 +149,8 @@ rawToken getToken() {
 
   scanner.start = scanner.current;
   char c = advance();
+  if (c == '"')
+    return string();
 
   if (c == '\n')
     return newline();

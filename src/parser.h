@@ -17,18 +17,18 @@ typedef enum {
   TOKEN_SEMICOLON,
   TOKEN_SLASH,
   TOKEN_STAR,
-  TOKEN_BANG, // One or two character tokens.
-  TOKEN_BANG_EQUAL,
+  TOKEN_BANG,
+  TOKEN_BANG_EQUAL, // One or two character tokens.
   TOKEN_EQUAL,
   TOKEN_EQUAL_EQUAL,
   TOKEN_GREATER,
   TOKEN_GREATER_EQUAL,
   TOKEN_LESS,
-  TOKEN_LESS_EQUAL, // Literals.
-  TOKEN_IDENTIFIER,
+  TOKEN_LESS_EQUAL,
+  TOKEN_IDENTIFIER, // Literals.
   TOKEN_STRING,
-  TOKEN_NUMBER, // Keywords.
-  TOKEN_AND,
+  TOKEN_NUMBER,
+  TOKEN_AND, // Keywords.
   TOKEN_CLASS,
   TOKEN_ELSE,
   TOKEN_FALSE,
@@ -46,7 +46,8 @@ typedef enum {
   TOKEN_WHILE,
   TOKEN_NEWLINE,
   TOKEN_ERROR,
-  TOKEN_EOF
+  TOKEN_EOF,
+  TOKEN_UNKNOWN
 } tokenType;
 
 typedef struct {
@@ -54,9 +55,6 @@ typedef struct {
   int length;
   tokenType type;
 } Token;
-
-// make a token struct
-Token makeToken(rawToken);
 
 void parse(const char *source);
 
