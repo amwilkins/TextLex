@@ -6,6 +6,16 @@
 
 static bool string() { return true; }
 
+bool isInt(char c) { return c >= '0' && c <= '9'; }
+
+Token makeToken(rawToken rawToken, tokenType type) {
+  Token token;
+  token.start = rawToken.start;
+  token.length = rawToken.length;
+  token.type = type;
+  return token;
+}
+
 Token processToken(rawToken rawToken) {
   Token token;
   char c = rawToken.start[0];
@@ -13,91 +23,76 @@ Token processToken(rawToken rawToken) {
   tokenType type;
   type = TOKEN_UNKNOWN;
 
+  if (isInt(c)) {
+    return makeToken(rawToken, TOKEN_NUMBER);
+  }
+
   switch (c) {
+  case '\n':
+    return makeToken(rawToken, TOKEN_NEWLINE);
   case '(':
-    type = TOKEN_LEFT_PAREN;
-    break;
+    return makeToken(rawToken, TOKEN_LEFT_PAREN);
   case ')':
-    type = TOKEN_RIGHT_PAREN;
-    break;
+    return makeToken(rawToken, TOKEN_RIGHT_PAREN);
   case '{':
-    type = TOKEN_LEFT_BRACE;
-    break;
+    return makeToken(rawToken, TOKEN_LEFT_BRACE);
   case '}':
-    type = TOKEN_RIGHT_BRACE;
-    break;
+    return makeToken(rawToken, TOKEN_RIGHT_BRACE);
   case ';':
-    type = TOKEN_SEMICOLON;
-    break;
+    return makeToken(rawToken, TOKEN_SEMICOLON);
   case ',':
-    type = TOKEN_COMMA;
-    break;
+    return makeToken(rawToken, TOKEN_COMMA);
   case '.':
-    type = TOKEN_DOT;
-    break;
+    return makeToken(rawToken, TOKEN_DOT);
   case '-':
-    type = TOKEN_MINUS;
-    break;
+    return makeToken(rawToken, TOKEN_MINUS);
   case '+':
-    type = TOKEN_PLUS;
-    break;
+    return makeToken(rawToken, TOKEN_PLUS);
   case '/':
-    type = TOKEN_SLASH;
-    break;
+    return makeToken(rawToken, TOKEN_SLASH);
   case '*':
-    type = TOKEN_STAR;
-    break;
+    return makeToken(rawToken, TOKEN_STAR);
   case '!':
     if (next_c == '=') {
-      type = TOKEN_BANG_EQUAL;
       rawToken.length++;
       getToken();
-      break;
+      return makeToken(rawToken, TOKEN_BANG_EQUAL);
     } else {
-      type = TOKEN_BANG;
-      break;
+      return makeToken(rawToken, TOKEN_BANG);
     }
   case '=':
     if (next_c == '=') {
-      type = TOKEN_EQUAL_EQUAL;
       rawToken.length++;
       getToken();
-      break;
+      return makeToken(rawToken, TOKEN_EQUAL_EQUAL);
+
     } else {
-      type = TOKEN_EQUAL;
-      break;
+      return makeToken(rawToken, TOKEN_EQUAL);
     }
   case '<':
     if (next_c == '=') {
-      type = TOKEN_LESS_EQUAL;
       rawToken.length++;
       getToken();
-      break;
+      return makeToken(rawToken, TOKEN_LESS_EQUAL);
+
     } else {
-      type = TOKEN_LESS;
-      break;
+      return makeToken(rawToken, TOKEN_LESS);
     }
   case '>':
     if (next_c == '=') {
-      type = TOKEN_GREATER_EQUAL;
       rawToken.length++;
       getToken();
-      break;
+      return makeToken(rawToken, TOKEN_GREATER_EQUAL);
+
     } else {
-      type = TOKEN_GREATER;
-      break;
+      return makeToken(rawToken, TOKEN_GREATER);
     }
   case '"':
-    type = TOKEN_STRING;
-    break;
-  default:
-    type = TOKEN_UNKNOWN;
-  }
+    return makeToken(rawToken, TOKEN_STRING);
 
-  token.type = type;
-  token.start = rawToken.start;
-  token.length = rawToken.length;
-  return token;
+  default:
+    return makeToken(rawToken, TOKEN_UNKNOWN);
+  }
 }
 
 // advance to the next token
@@ -106,6 +101,7 @@ static void advance() {
   remove("output.txt");
   out = fopen("output.txt", "a");
   rawToken prev_token;
+  Token token;
 
   printf("Token type and value\n");
   for (;;) {
@@ -113,7 +109,7 @@ static void advance() {
     if (rawToken.isAtEnd)
       break;
 
-    Token token = processToken(rawToken);
+    token = processToken(rawToken);
 
     // just for testing
     printf("Token: %2d, %.*s\n", token.type, token.length, token.start);
