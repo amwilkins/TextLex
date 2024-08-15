@@ -3,21 +3,21 @@
 #include "dArray.h"
 
 // Create the dynamic array
-void initdArray(dArray *array) {
+void initDArray(DArray *array) {
   array->capacity = 0;
   array->count = 0;
   array->code = NULL;
 }
 
-void freedArray(dArray *array) {
+void freeDArray(DArray *array) {
   // Free the array
   FREE_ARRAY(uint8_t, array->code, array->capacity);
   // Reinitialize the array to zero out it's values
-  initdArray(array);
+  initDArray(array);
 }
 
 // Write to the array
-void writedArray(dArray *darray, uint8_t byte) {
+void writeDArray(DArray *darray, uint8_t byte) {
   // If the array is full, double the size
   if (darray->capacity < darray->count + 1) {
     int oldCapacity = darray->capacity;
@@ -32,7 +32,7 @@ void writedArray(dArray *darray, uint8_t byte) {
 
 // Grow the array
 void *reallocate(void *pointer, size_t oldSize, size_t newSize) {
-  // Remove the dArray if newSize is 0
+  // Remove the DArray if newSize is 0
   if (newSize == 0) {
     free(pointer);
     return NULL;

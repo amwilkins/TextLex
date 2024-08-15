@@ -7,8 +7,8 @@ typedef struct {
   bool isAtEnd;
 } rawToken;
 
-void parse(const char *source);
 void initScanner(const char *source);
 rawToken getToken();
+bool isAtEnd();
 
 #endif

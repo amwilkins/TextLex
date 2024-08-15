@@ -1,7 +1,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "dArray.h"
 #include "tokenizer.h"
 
 typedef struct {
@@ -17,7 +16,7 @@ void initScanner(const char *source) {
 }
 
 // check for end of file
-static bool isAtEnd() { return *scanner.current == '\0'; }
+bool isAtEnd() { return *scanner.current == '\0'; }
 
 // return NEXT character
 static char peekNext() {
@@ -46,7 +45,7 @@ static bool match(char expected) {
 }
 
 // make a token struct
-static rawToken makeToken() {
+rawToken makeRawToken() {
   rawToken token;
   token.start = scanner.start;
   token.length = (int)(scanner.current - scanner.start);
@@ -68,7 +67,7 @@ static bool isAlpha(char c) {
 static rawToken word() {
   while (isAlpha(peek()) || isDigit(peek()))
     advance();
-  return makeToken();
+  return makeRawToken();
 }
 
 // return a full number
@@ -82,7 +81,7 @@ static rawToken number() {
     while (isDigit(peek()))
       advance();
   }
-  return makeToken();
+  return makeRawToken();
 }
 
 // skip whitespace
@@ -123,7 +122,7 @@ static rawToken newline() {
   token.start = scanner.start;
   token.length = (int)(scanner.current - scanner.start);
   token.isAtEnd = false;
-  return makeToken();
+  return makeRawToken();
 }
 
 // scan for a string
@@ -137,11 +136,14 @@ static rawToken string() {
 
   // The closing quote.
   advance();
-  return makeToken();
+  return makeRawToken();
 }
 
 // scan a token
 rawToken getToken() {
+  if (!*scanner.current)
+    return end();
+
   if (isAtEnd())
     return end();
 
@@ -164,5 +166,5 @@ rawToken getToken() {
     return number();
   }
 
-  return makeToken();
+  return makeRawToken();
 }

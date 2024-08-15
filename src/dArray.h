@@ -21,12 +21,12 @@ typedef struct {
   int count;
   int capacity;
   uint8_t *code;
-} dArray;
+} DArray;
 
-// dArray
-void initdArray(dArray *darray);
-void freedArray(dArray *darray);
-void writedArray(dArray *darray, uint8_t byte);
+// DArray
+void initDArray(DArray *darray);
+void freeDArray(DArray *darray);
+void writeDArray(DArray *darray, uint8_t byte);
 
 // memory
 void *reallocate(void *pointer, size_t oldSize, size_t newSize);

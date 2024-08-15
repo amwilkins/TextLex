@@ -1,8 +1,11 @@
 #include <stdio.h>
 
-#include "common.h"
+#include "dArray.h"
 #include "parser.h"
 #include "tokenizer.h"
+
+// init parser to keep our place
+Parser parser;
 
 static bool string() { return true; }
 
@@ -22,6 +25,10 @@ Token processToken(rawToken rawToken) {
   char next_c = rawToken.start[1];
   tokenType type;
   type = TOKEN_UNKNOWN;
+
+  if (rawToken.isAtEnd) {
+    return makeToken(rawToken, TOKEN_EOF);
+  }
 
   if (isInt(c)) {
     return makeToken(rawToken, TOKEN_NUMBER);
@@ -103,13 +110,17 @@ static void advance() {
   rawToken prev_token;
   Token token;
 
-  printf("Token type and value\n");
+  parser.previous = parser.current;
   for (;;) {
     rawToken rawToken = getToken();
-    if (rawToken.isAtEnd)
-      break;
 
-    token = processToken(rawToken);
+    parser.current = processToken(rawToken);
+    token = parser.current;
+
+    if (token.type == TOKEN_EOF)
+      break;
+    if (token.type == TOKEN_NEWLINE)
+      break;
 
     // just for testing
     printf("Token: %2d, %.*s\n", token.type, token.length, token.start);
@@ -120,8 +131,8 @@ static void advance() {
 }
 
 // interpret an array of characters
-void parse(const char *source) {
-
+bool parse(char *source, DArray *token_bag) {
   initScanner(source);
   advance();
+  return 1;
 }
