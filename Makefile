@@ -2,7 +2,7 @@ CC ?= gcc
 BIN := tokenize
 
 all:
-	$(CC) -o $(BIN) $(wildcard src/*.c)
+	$(CC) -g -o $(BIN) $(wildcard src/*.c)
 
 run: all
 	./$(BIN)
