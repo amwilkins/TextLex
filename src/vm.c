@@ -16,27 +16,14 @@ void freeVM(VM *vm) { vm->token_bag = NULL; }
 void push(VM *vm, Value *value) {
   vm->stack_top = value;
   vm->stack_top++;
-  }
+}
 
 Value pop(VM *vm) {
   vm->stack_top--;
   return *vm->stack_top;
 }
 
-/* void pushInt(VM *vm, int i) { */
-/*   vm->stack_top = value; */
-/*   vm->stack_top++; */
-/*   } */
-/**/
-/* Value popInt(VM *vm) { */
-/*   vm->stack_top--; */
-/*   return *vm->stack_top; */
-/* } */
-
-void printValue(Value value){
-  printf("%g",value);
-}
-
+void printValue(Value value) { printf("%g", value); }
 
 /* InterpretResult run(VM *vm) {  */
 /*   printf("Code: &d\n", vm->ip); */
@@ -59,35 +46,39 @@ void printValue(Value value){
 /*     } */
 /*   } */
 
+/* // debug code */
+/* printf("          "); */
+/* for (Value *slot = vm->stack; slot < vm->stack_top; slot++) { */
+/**/
+/*   printf("Stack value: "); */
+/*   printValue(*slot); */
+/* } */
+/* print("\n"); */
 
-  /* // debug code */
-  /* printf("          "); */
-  /* for (Value *slot = vm->stack; slot < vm->stack_top; slot++) { */
-  /**/
-  /*   printf("Stack value: "); */
-  /*   printValue(*slot); */
-  /* } */
-  /* print("\n"); */
-
-
-  /* return INTERPRET_OK; } */
+/* return INTERPRET_OK; } */
 
 InterpretResult interpret(char *source) {
   DArray token_bag;
-  initDArray(&token_bag);
+  initDArray(&token_bag, sizeof(Token));
 
   VM vm = initVM(&token_bag);
+
   // fill the chunk with instructions
   if (!parse(source, &token_bag)) {
     freeDArray(&token_bag);
     printf("Failed to parse\n");
     return INTERPRET_COMPILE_ERROR;
   }
+  Token *tokens = token_bag.code;
+  for (int i = 0; i < token_bag.count; i++) {
+    Token token = tokens[i];
+    printf("Token: %.*s\n", token.length, token.start);
+  }
 
   /* InterpretResult result = run(&vm); */
   /**/
   /* freeDArray(&token_bag); */
-  //freeVM(&vm);
+  //   freeVM(&vm);
 
   return INTERPRET_OK;
 }

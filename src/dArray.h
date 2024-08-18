@@ -22,13 +22,14 @@ typedef enum {
 typedef struct {
   int count;
   int capacity;
-  uint8_t *code;
+  size_t element_size;
+  void *code;
 } DArray;
 
 // DArray
-void initDArray(DArray *darray);
+void initDArray(DArray *darray, size_t element_size);
 void freeDArray(DArray *darray);
-void writeDArray(DArray *darray, uint8_t byte);
+void writeDArray(DArray *darray, void *element);
 
 // memory
 void *reallocate(void *pointer, size_t oldSize, size_t newSize);

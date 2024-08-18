@@ -1,7 +1,5 @@
-#include <stdio.h>
-
-#include "dArray.h"
 #include "parser.h"
+#include "dArray.h"
 #include "scanner.h"
 
 // init parser to keep our place
@@ -103,7 +101,7 @@ Token processToken(rawToken rawToken) {
 }
 
 // advance to the next token
-static void advance() {
+static void advance(DArray *token_bag) {
   rawToken prev_token;
   Token token;
 
@@ -112,21 +110,18 @@ static void advance() {
     rawToken rawToken = getToken();
 
     parser.current = processToken(rawToken);
-    token = parser.current;
 
+    token = parser.current;
     if (token.type == TOKEN_EOF)
       break;
-    /// if (token.type == TOKEN_NEWLINE)
-    ///   break;
 
-    // just for testing
-    printf("Token: %2d, %.*s\n", token.type, token.length, token.start);
+    writeDArray(token_bag, &token);
   }
 }
 
 // interpret an array of characters
 bool parse(char *source, DArray *token_bag) {
   initScanner(source);
-  advance();
+  advance(token_bag);
   return 1;
 }

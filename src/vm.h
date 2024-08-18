@@ -26,6 +26,6 @@ void freeVM(VM *vm);
 
 InterpretResult interpret(char *source);
 void push(VM *vm, Value *value);
-Value pop();
+Value pop(VM *vm);
 
 #endif
