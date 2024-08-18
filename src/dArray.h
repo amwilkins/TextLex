@@ -14,6 +14,8 @@
   reallocate(pointer, sizeof(type) * (oldCount), 0)
 
 typedef enum {
+  OP_INTEGER,
+  OP_STRING,
   OP_RETURN,
 } OpCode;
 

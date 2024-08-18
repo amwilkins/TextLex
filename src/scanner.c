@@ -1,7 +1,6 @@
 #include <stdbool.h>
-#include <stdio.h>
 
-#include "tokenizer.h"
+#include "scanner.h"
 
 typedef struct {
   const char *start;

@@ -3,7 +3,7 @@
 
 #include "dArray.h"
 // #include "table.h"
-// #include "value.h"
+#include "value.h"
 
 typedef enum {
   INTERPRET_OK,
@@ -14,11 +14,18 @@ typedef enum {
 #define STACK_MAX 256
 typedef struct {
   DArray *token_bag;
-  uint8_t *ip;
+  char *ip;
+  int tos;
+  int iStack[STACK_MAX]; // integers
+  Value stack[STACK_MAX];
+  Value *stack_top;
 } VM;
 
+VM initVM(DArray *token_bag);
+void freeVM(VM *vm);
+
 InterpretResult interpret(char *source);
-/* void push(Value value); */
-/* Value pop(); */
+void push(VM *vm, Value *value);
+Value pop();
 
 #endif

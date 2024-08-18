@@ -2,7 +2,7 @@
 
 #include "dArray.h"
 #include "parser.h"
-#include "tokenizer.h"
+#include "scanner.h"
 
 // init parser to keep our place
 Parser parser;
@@ -104,9 +104,6 @@ Token processToken(rawToken rawToken) {
 
 // advance to the next token
 static void advance() {
-  FILE *out;
-  remove("output.txt");
-  out = fopen("output.txt", "a");
   rawToken prev_token;
   Token token;
 
@@ -119,14 +116,11 @@ static void advance() {
 
     if (token.type == TOKEN_EOF)
       break;
-    if (token.type == TOKEN_NEWLINE)
-      break;
+    /// if (token.type == TOKEN_NEWLINE)
+    ///   break;
 
     // just for testing
     printf("Token: %2d, %.*s\n", token.type, token.length, token.start);
-
-    // append to output file
-    fprintf(out, "%d %.*s\n", token.type, token.length, token.start);
   }
 }
 
