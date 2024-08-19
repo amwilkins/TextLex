@@ -1,10 +1,10 @@
 #include "parser.h"
-#include "common.h"
 #include "dArray.h"
 #include "scanner.h"
 
 // init parser to keep our place
 Parser parser;
+VM *vm;
 
 static bool string() { return true; }
 
@@ -22,6 +22,17 @@ static void emitBytes(DArray *array, uint8_t byte1, uint8_t byte2) {
 static void emitNumber(DArray *constants, Token token) {
   double value = strtod(token.start, NULL);
   writeDArray(constants, &value);
+}
+
+static void unary() {
+  tokenType operatorType = parser.previous.type;
+  switch (operatorType) {
+  case TOKEN_MINUS:
+    emitByte(vm->token_bag, OP_NEGATE);
+    break;
+  default:
+    return;
+  }
 }
 
 Token makeToken(rawToken rawToken, tokenType type) {
@@ -139,6 +150,8 @@ static void advance(VM *vm) {
 
 // interpret an array of characters
 bool parse(char *source, VM *vm) {
+  vm = vm;
+
   initScanner(source);
   advance(vm);
 
