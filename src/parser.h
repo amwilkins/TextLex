@@ -2,6 +2,7 @@
 #define PARSER_H
 
 #include "dArray.h"
+#include "vm.h"
 
 // types of tokens allowed
 typedef enum {
@@ -61,6 +62,6 @@ typedef struct {
   Token previous;
 } Parser;
 
-bool parse(char *source, DArray *token_bag);
+bool parse(char *source, VM *vm);
 
 #endif

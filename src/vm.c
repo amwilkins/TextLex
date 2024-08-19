@@ -3,9 +3,10 @@
 #include "parser.h"
 #include "value.h"
 
-VM initVM(DArray *token_bag) {
+VM initVM(DArray *token_bag, DArray *constants) {
   VM vm;
   vm.token_bag = token_bag;
+  vm.constants = constants;
   vm.stack_top = vm.stack;
   vm.tos = -1;
   return vm;
@@ -61,24 +62,17 @@ InterpretResult interpret(char *source) {
   DArray token_bag;
   initDArray(&token_bag, sizeof(Token));
 
-  VM vm = initVM(&token_bag);
+  DArray constants;
+  initDArray(&constants, sizeof(double));
+
+  VM vm = initVM(&token_bag, &constants);
 
   // fill the chunk with instructions
-  if (!parse(source, &token_bag)) {
+  if (!parse(source, &vm)) {
     freeDArray(&token_bag);
     printf("Failed to parse\n");
     return INTERPRET_COMPILE_ERROR;
   }
-  Token *tokens = token_bag.code;
-  for (int i = 0; i < token_bag.count; i++) {
-    Token token = tokens[i];
-    printf("Token: %.*s\n", token.length, token.start);
-  }
-
-  /* InterpretResult result = run(&vm); */
-  /**/
-  /* freeDArray(&token_bag); */
-  //   freeVM(&vm);
 
   return INTERPRET_OK;
 }

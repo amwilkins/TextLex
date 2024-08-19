@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "common.h"
 #include "dArray.h"
 #include "scanner.h"
 
@@ -8,6 +9,20 @@ Parser parser;
 static bool string() { return true; }
 
 bool isInt(char c) { return c >= '0' && c <= '9'; }
+
+static void emitByte(DArray *token_bag, uint8_t byte) {
+  writeDArray(token_bag, &byte);
+}
+
+static void emitBytes(DArray *array, uint8_t byte1, uint8_t byte2) {
+  writeDArray(array, &byte1);
+  writeDArray(array, &byte2);
+}
+
+static void emitNumber(DArray *constants, Token token) {
+  double value = strtod(token.start, NULL);
+  writeDArray(constants, &value);
+}
 
 Token makeToken(rawToken rawToken, tokenType type) {
   Token token;
@@ -101,7 +116,7 @@ Token processToken(rawToken rawToken) {
 }
 
 // advance to the next token
-static void advance(DArray *token_bag) {
+static void advance(VM *vm) {
   rawToken prev_token;
   Token token;
 
@@ -110,18 +125,24 @@ static void advance(DArray *token_bag) {
     rawToken rawToken = getToken();
 
     parser.current = processToken(rawToken);
-
     token = parser.current;
+
+    emitByte(vm->token_bag, token.type);
+
+    if (token.type == TOKEN_NUMBER)
+      emitNumber(vm->constants, token);
+
     if (token.type == TOKEN_EOF)
       break;
-
-    writeDArray(token_bag, &token);
   }
 }
 
 // interpret an array of characters
-bool parse(char *source, DArray *token_bag) {
+bool parse(char *source, VM *vm) {
   initScanner(source);
-  advance(token_bag);
+  advance(vm);
+
+  emitByte(vm->token_bag, TOKEN_RETURN);
+
   return 1;
 }

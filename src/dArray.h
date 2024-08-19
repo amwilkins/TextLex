@@ -15,6 +15,7 @@
 
 typedef enum {
   OP_INTEGER,
+  OP_DOUBLE,
   OP_STRING,
   OP_RETURN,
 } OpCode;

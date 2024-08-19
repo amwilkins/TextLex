@@ -14,6 +14,8 @@ typedef enum {
 #define STACK_MAX 256
 typedef struct {
   DArray *token_bag;
+  DArray *constants;
+  double constantTop;
   char *ip;
   int tos;
   int iStack[STACK_MAX]; // integers
@@ -21,7 +23,7 @@ typedef struct {
   Value *stack_top;
 } VM;
 
-VM initVM(DArray *token_bag);
+VM initVM(DArray *token_bag, DArray *constants);
 void freeVM(VM *vm);
 
 InterpretResult interpret(char *source);
