@@ -60,12 +60,14 @@ void runFile(const char *path) {
 }
 
 int main(int argc, const char *argv[]) {
+  // if no arg, start repl
   if (argc == 1) {
     repl();
+    // if arg, read file
   } else if (argc == 2) {
     runFile(argv[1]);
   } else {
-    printf("ERROR: Please supply 1 file\n");
+    printf("ERROR: Please supply a filepath\n");
     exit(64);
   }
 

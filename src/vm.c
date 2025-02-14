@@ -73,8 +73,14 @@ InterpretResult interpret(char *source) {
     printf("Failed to parse\n");
     return INTERPRET_COMPILE_ERROR;
   }
+
   printf("Token count: %d\n", token_bag.count);
-  printf("Fist constant: %g\n", *(double *)constants.code);
+  if (constants.count > 0) {
+    printf("Constants: %g\n", (double)constants.count);
+    printf("First constant: %g\n", *(double *)constants.code);
+  } else {
+    printf("Constants: None\n");
+  };
 
   return INTERPRET_OK;
 }
